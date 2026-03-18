@@ -1,19 +1,908 @@
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>My static Space</title>
-		<link rel="stylesheet" href="style.css" />
-	</head>
-	<body>
-		<div class="card">
-			<h1>Welcome to your static Space!</h1>
-			<p>You can modify this app directly by editing <i>index.html</i> in the Files and versions tab.</p>
-			<p>
-				Also don't forget to check the
-				<a href="https://huggingface.co/docs/hub/spaces" target="_blank">Spaces documentation</a>.
-			</p>
-		</div>
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ella & Co. — Private Estate Operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --navy: #080d1a;
+  --navy-mid: #0d1526;
+  --navy-light: #152035;
+  --black: #060810;
+  --silver: #a8b2c0;
+  --silver-light: #c8d0da;
+  --silver-bright: #e2e8ef;
+  --gold: #c9a96e;
+  --gold-light: #e0c898;
+  --white: #f5f7fa;
+  --text-muted: #6b7a8d;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--silver-light);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--gold); }
+
+/* ─── NOISE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.4;
+}
+
+/* ─── TYPOGRAPHY ─── */
+.serif { font-family: 'Cormorant Garamond', serif; }
+.label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold); opacity: 0.9;
+}
+
+/* ─── FADE-IN ANIMATION ─── */
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.9s cubic-bezier(.16,1,.3,1), transform 0.9s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.22s; }
+.reveal-delay-3 { transition-delay: 0.36s; }
+.reveal-delay-4 { transition-delay: 0.5s; }
+
+/* ─── GOLD DIVIDER ─── */
+.divider {
+  width: 40px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 28px auto;
+}
+.divider-left { margin: 28px 0; }
+
+/* ─── HEADER ─── */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 22px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(6,8,16,0.95) 0%, rgba(6,8,16,0) 100%);
+  transition: background 0.4s;
+}
+header.scrolled {
+  background: rgba(6,8,16,0.97);
+  border-bottom: 1px solid rgba(168,178,192,0.08);
+  backdrop-filter: blur(20px);
+}
+.header-logo {
+  display: flex; align-items: center; gap: 14px; text-decoration: none;
+}
+.logo-icon {
+  width: 38px; height: 38px;
+  border: 1px solid rgba(201,169,110,0.5);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  background: radial-gradient(circle at 40% 40%, rgba(201,169,110,0.08), transparent);
+}
+.logo-icon::after {
+  content: 'E';
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-weight: 400;
+  color: var(--gold); letter-spacing: 0.05em;
+}
+.logo-text-group { display: flex; flex-direction: column; gap: 1px; }
+.logo-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-weight: 400; letter-spacing: 0.12em;
+  color: var(--silver-bright);
+}
+.logo-sub {
+  font-size: 0.55rem; font-weight: 400; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--gold); opacity: 0.75;
+}
+nav { display: flex; gap: 40px; align-items: center; }
+nav a {
+  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--silver); text-decoration: none;
+  transition: color 0.3s;
+}
+nav a:hover { color: var(--gold-light); }
+.nav-cta {
+  padding: 10px 24px;
+  border: 1px solid rgba(201,169,110,0.5);
+  color: var(--gold) !important;
+  transition: all 0.3s !important;
+}
+.nav-cta:hover {
+  background: rgba(201,169,110,0.08) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ─── HERO ─── */
+#hero {
+  min-height: 100vh; position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 40px 80px;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(13,21,38,0.7) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(201,169,110,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 50% at 80% 10%, rgba(168,178,192,0.03) 0%, transparent 50%),
+    linear-gradient(180deg, var(--black) 0%, #080e1c 50%, #060810 100%);
+}
+.hero-bg-img {
+  position: absolute; inset: 0; z-index: -1;
+  background: url('https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1800&q=80') center/cover no-repeat;
+  opacity: 0.07;
+}
+.hero-lines {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(0deg, rgba(201,169,110,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,169,110,0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+}
+.hero-content { position: relative; z-index: 2; max-width: 860px; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid rgba(201,169,110,0.25);
+  padding: 8px 20px; margin-bottom: 52px;
+  background: rgba(201,169,110,0.04);
+  backdrop-filter: blur(10px);
+}
+.hero-badge span {
+  font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold); font-weight: 400;
+}
+.hero-badge::before, .hero-badge::after {
+  content: '◆'; font-size: 0.4rem; color: var(--gold); opacity: 0.5;
+}
+.qualifier {
+  font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--silver); font-weight: 300; margin-bottom: 28px;
+  opacity: 0.6;
+}
+h1.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 6vw, 5.2rem);
+  font-weight: 300; line-height: 1.1;
+  color: var(--white); letter-spacing: 0.01em;
+  margin-bottom: 28px;
+}
+h1.hero-title em { font-style: italic; color: var(--gold-light); }
+.hero-sub {
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--silver); font-weight: 300; margin-bottom: 32px;
+}
+.hero-desc {
+  font-size: 0.95rem; line-height: 1.85; color: var(--silver);
+  max-width: 580px; margin: 0 auto 52px; font-weight: 300; opacity: 0.8;
+}
+.hero-qualifier-box {
+  display: inline-block;
+  border-left: 2px solid var(--gold);
+  padding: 12px 24px; margin-bottom: 52px;
+  background: rgba(201,169,110,0.04);
+  text-align: left;
+}
+.hero-qualifier-box p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; font-weight: 300; font-style: italic;
+  color: var(--silver-bright); line-height: 1.5;
+}
+.btn-primary {
+  display: inline-block; padding: 16px 44px;
+  background: linear-gradient(135deg, var(--gold) 0%, #b8924a 100%);
+  color: var(--black); text-decoration: none;
+  font-size: 0.62rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase;
+  position: relative; overflow: hidden;
+  transition: all 0.4s cubic-bezier(.16,1,.3,1);
+  box-shadow: 0 8px 40px rgba(201,169,110,0.25), 0 2px 8px rgba(0,0,0,0.3);
+}
+.btn-primary::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 60px rgba(201,169,110,0.35), 0 4px 16px rgba(0,0,0,0.4); }
+.btn-primary:hover::before { opacity: 1; }
+.btn-secondary {
+  display: inline-block; padding: 16px 44px;
+  border: 1px solid rgba(201,169,110,0.4);
+  color: var(--gold); text-decoration: none;
+  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase;
+  transition: all 0.4s;
+  background: transparent;
+}
+.btn-secondary:hover { background: rgba(201,169,110,0.06); border-color: var(--gold); }
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2;
+  opacity: 0.4;
+}
+.hero-scroll span { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); }
+.scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--silver), transparent); animation: scrollpulse 2s infinite; }
+@keyframes scrollpulse { 0%,100% { opacity: 0.4; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(0.6); } }
+
+/* ─── SECTION BASE ─── */
+section { padding: 120px 40px; position: relative; }
+.container { max-width: 1100px; margin: 0 auto; }
+.section-label { display: block; margin-bottom: 24px; }
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-weight: 300; color: var(--white); letter-spacing: 0.02em;
+  line-height: 1.15;
+}
+.section-title em { font-style: italic; color: var(--gold-light); }
+.section-text {
+  font-size: 0.95rem; line-height: 1.9; color: var(--silver);
+  font-weight: 300; max-width: 620px; opacity: 0.85;
+}
+
+/* ─── SECTION: PROBLEM ─── */
+#problem { background: var(--navy); }
+#problem::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 80% 50%, rgba(201,169,110,0.03), transparent);
+  pointer-events: none;
+}
+.problem-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.problem-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10rem; font-weight: 300;
+  line-height: 1; color: rgba(201,169,110,0.06);
+  letter-spacing: -0.05em; user-select: none;
+  position: absolute; right: -20px; top: -40px;
+}
+.problem-visual {
+  position: relative; height: 420px;
+  background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
+  overflow: hidden;
+}
+.problem-visual::before {
+  content: ''; position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80') center/cover;
+  opacity: 0.25;
+}
+.problem-visual::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(8,13,26,0.6), rgba(201,169,110,0.05));
+}
+
+/* ─── SECTION: SOLUTION ─── */
+#solution { background: var(--black); }
+.solution-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.solution-visual {
+  position: relative; height: 480px;
+  background: var(--navy-mid); overflow: hidden;
+}
+.solution-visual::before {
+  content: ''; position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=900&q=80') center/cover;
+  opacity: 0.3;
+}
+.solution-visual::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(6,8,16,0.7), transparent);
+}
+
+/* ─── SECTION: ELLA INTELLIGENCE ─── */
+#intelligence {
+  background: linear-gradient(180deg, var(--navy) 0%, var(--black) 100%);
+  text-align: center;
+}
+.intelligence-inner { max-width: 800px; margin: 0 auto; }
+.intelligence-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-style: italic; color: var(--silver); font-weight: 300;
+  margin-bottom: 32px; opacity: 0.7;
+}
+.intel-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: rgba(168,178,192,0.08); margin-top: 60px;
+}
+.intel-item {
+  background: var(--navy); padding: 36px 28px; text-align: left;
+  position: relative; overflow: hidden;
+  transition: background 0.4s;
+}
+.intel-item:hover { background: var(--navy-light); }
+.intel-item::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent);
+  opacity: 0; transition: opacity 0.4s;
+}
+.intel-item:hover::before { opacity: 1; }
+.intel-icon { font-size: 1.3rem; margin-bottom: 16px; opacity: 0.7; }
+.intel-title {
+  font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--silver-bright); font-weight: 400; margin-bottom: 8px;
+}
+.intel-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+
+/* ─── SECTION: SERVICES ─── */
+#services { background: var(--black); }
+.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(168,178,192,0.07); margin-top: 60px; }
+.service-item {
+  background: var(--navy); padding: 40px 28px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.4s;
+}
+.service-item:hover { background: var(--navy-light); border-bottom-color: var(--gold); }
+.service-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem; font-weight: 300; color: rgba(201,169,110,0.2);
+  line-height: 1; margin-bottom: 20px;
+}
+.service-name {
+  font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--silver-bright); font-weight: 400; margin-bottom: 12px; line-height: 1.5;
+}
+.service-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.75; }
+
+/* ─── SECTION: ARRIVAL ─── */
+#arrival {
+  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+  text-align: center; overflow: hidden;
+}
+#arrival::before {
+  content: ''; position: absolute; inset: 0;
+  background: url('https://images.unsplash.com/photo-1615529328331-f8917597711f?w=1600&q=80') center/cover;
+  opacity: 0.06;
+}
+.arrival-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+.arrival-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 300; font-style: italic;
+  color: var(--gold-light); margin: 32px 0; line-height: 1.3;
+}
+
+/* ─── SECTION: EXCLUSIVITY ─── */
+#exclusivity { background: var(--black); text-align: center; }
+.excl-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 300; line-height: 0.9;
+  background: linear-gradient(180deg, rgba(201,169,110,0.6) 0%, rgba(201,169,110,0.1) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; display: block; margin-bottom: 8px;
+}
+.excl-caption {
+  font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); opacity: 0.7; margin-bottom: 48px;
+}
+
+/* ─── SECTION: PRICING ─── */
+#pricing { background: var(--navy); }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(168,178,192,0.07); margin-top: 60px; }
+.pricing-card { background: var(--navy-mid); padding: 52px 36px; position: relative; transition: transform 0.4s; }
+.pricing-card:hover { transform: translateY(-8px); z-index: 2; }
+.pricing-card.featured { background: var(--navy-light); }
+.pricing-card.featured::before {
+  content: 'RECOMMENDED'; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--gold), #b8924a);
+  color: var(--black); font-size: 0.55rem; letter-spacing: 0.2em;
+  padding: 6px 20px; font-weight: 600;
+}
+.pricing-tier { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+.pricing-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; font-weight: 400; color: var(--white); margin-bottom: 8px;
+}
+.pricing-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem; font-weight: 300; color: var(--gold-light);
+  margin: 24px 0 4px; line-height: 1;
+}
+.pricing-period { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 36px; }
+.pricing-divider { width: 100%; height: 1px; background: rgba(168,178,192,0.1); margin-bottom: 32px; }
+.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
+.pricing-features li {
+  font-size: 0.8rem; color: var(--silver); font-weight: 300;
+  padding-left: 20px; position: relative; line-height: 1.4;
+}
+.pricing-features li::before {
+  content: '—'; position: absolute; left: 0; color: var(--gold); opacity: 0.6;
+}
+
+/* ─── SECTION: TRUST ─── */
+#trust { background: var(--black); text-align: center; }
+.trust-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 60px; }
+.trust-pillar { padding: 40px 28px; border: 1px solid rgba(168,178,192,0.07); }
+.trust-pillar-icon { font-size: 1.8rem; margin-bottom: 20px; opacity: 0.5; }
+.trust-pillar-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem; font-weight: 400; color: var(--white); margin-bottom: 12px;
+}
+.trust-pillar-text { font-size: 0.82rem; color: var(--text-muted); line-height: 1.75; }
+
+/* ─── SECTION: FINAL CTA ─── */
+#cta {
+  background: var(--navy);
+  text-align: center; overflow: hidden;
+}
+#cta::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,169,110,0.06), transparent),
+    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(13,21,38,0.8), transparent);
+  pointer-events: none;
+}
+.cta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+.cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 300; color: var(--white); margin-bottom: 24px;
+  line-height: 1.1;
+}
+.cta-body {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem; font-weight: 300; font-style: italic;
+  color: var(--silver); line-height: 1.7; margin-bottom: 52px; opacity: 0.8;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--black); padding: 60px 40px;
+  border-top: 1px solid rgba(168,178,192,0.07);
+}
+.footer-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 32px;
+}
+.footer-logo-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 300; color: var(--white); letter-spacing: 0.08em;
+}
+.footer-logo-sub { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); opacity: 0.6; margin-top: 4px; }
+.footer-center { text-align: center; }
+.footer-referral {
+  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-muted); border: 1px solid rgba(168,178,192,0.1);
+  padding: 10px 20px; display: inline-block;
+}
+.footer-contact { text-align: right; }
+.footer-location { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; }
+.footer-phone { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--gold-light); }
+.footer-bottom {
+  max-width: 1100px; margin: 40px auto 0;
+  padding-top: 24px; border-top: 1px solid rgba(168,178,192,0.04);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-copy { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.1em; }
+
+/* ─── WHATSAPP BUTTON ─── */
+.whatsapp-btn {
+  position: fixed; bottom: 32px; right: 32px; z-index: 200;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: linear-gradient(135deg, #25D366, #1da851);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 32px rgba(37,211,102,0.35), 0 2px 8px rgba(0,0,0,0.3);
+  text-decoration: none;
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: float 3s ease-in-out infinite;
+}
+.whatsapp-btn:hover { transform: scale(1.1); box-shadow: 0 12px 44px rgba(37,211,102,0.5); }
+.whatsapp-btn svg { width: 26px; height: 26px; fill: white; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.whatsapp-btn:hover { transform: scale(1.1) !important; }
+
+/* ─── RESPONSIVE ─── */
+@media(max-width: 900px) {
+  header { padding: 20px 24px; }
+  nav { display: none; }
+  section { padding: 80px 24px; }
+  .problem-layout, .solution-layout { grid-template-columns: 1fr; gap: 40px; }
+  .problem-visual, .solution-visual { height: 260px; }
+  .intel-grid { grid-template-columns: 1fr 1fr; }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .trust-pillars { grid-template-columns: 1fr; }
+  .footer-inner { flex-direction: column; text-align: center; }
+  .footer-contact { text-align: center; }
+  .footer-bottom { flex-direction: column; gap: 12px; }
+}
+@media(max-width: 600px) {
+  .intel-grid { grid-template-columns: 1fr; }
+  .services-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="header">
+  <a href="#" class="header-logo">
+    <div class="logo-icon"></div>
+    <div class="logo-text-group">
+      <span class="logo-name">Ella & Co.</span>
+      <span class="logo-sub">Private Estate Operations</span>
+    </div>
+  </a>
+  <nav>
+    <a href="#problem">The Challenge</a>
+    <a href="#intelligence">Ella Intelligence™</a>
+    <a href="#services">Services</a>
+    <a href="#pricing">Investment</a>
+    <a href="#cta" class="nav-cta">Private Introduction</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-img"></div>
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <div class="hero-badge reveal">
+      <span>Ella &amp; Co. — Private Estate Operations</span>
+    </div>
+    <p class="qualifier reveal reveal-delay-1">Florida · By Referral Only</p>
+    <h1 class="hero-title reveal reveal-delay-2">
+      Your Home Should Not<br>Feel Like a <em>Second Business</em>
+    </h1>
+    <p class="hero-sub reveal reveal-delay-2">Private Estate Operations for Ultra-Luxury Residences</p>
+    <div class="divider reveal reveal-delay-3"></div>
+    <p class="hero-desc reveal reveal-delay-3">
+      We operate exceptional homes with precision, discretion, and predictive intelligence — so owners never need to manage staff, vendors, or property risks.
+    </p>
+    <div class="hero-qualifier-box reveal reveal-delay-3">
+      <p>"Designed for owners of $5M+ residences who expect flawless operation without involvement."</p>
+    </div>
+    <div class="reveal reveal-delay-4">
+      <a href="https://wa.me/14072023758" class="btn-primary">Request Confidential Consultation</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="problem-layout">
+      <div>
+        <span class="label section-label reveal">The Challenge</span>
+        <h2 class="section-title reveal reveal-delay-1">The Hidden Complexity of<br><em>Ultra-Luxury Homes</em></h2>
+        <div class="divider divider-left reveal reveal-delay-2"></div>
+        <p class="section-text reveal reveal-delay-2">
+          A $10M+ residence operates like a mid-size company — requiring coordination of multiple vendors, systems, and maintenance cycles. Without oversight, small issues can become costly structural damage, especially in Florida's climate.
+        </p>
+      </div>
+      <div class="problem-visual reveal reveal-delay-1">
+        <div class="problem-num">01</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section id="solution">
+  <div class="container">
+    <div class="solution-layout">
+      <div class="solution-visual reveal"></div>
+      <div>
+        <span class="label section-label reveal reveal-delay-1">The Solution</span>
+        <h2 class="section-title reveal reveal-delay-2">We Operate Your Home Like a<br><em>Private Estate System</em></h2>
+        <div class="divider divider-left reveal reveal-delay-3"></div>
+        <p class="section-text reveal reveal-delay-3">
+          Ella & Co. acts as the executive operational layer of your residence — managing everything from maintenance and vendors to intelligent monitoring and lifestyle readiness.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ELLA INTELLIGENCE -->
+<section id="intelligence">
+  <div class="container">
+    <div class="intelligence-inner">
+      <span class="label section-label reveal">Proprietary Technology</span>
+      <h2 class="section-title reveal reveal-delay-1">Ella Intelligence™</h2>
+      <div class="divider reveal reveal-delay-2"></div>
+      <p class="intelligence-subtitle reveal reveal-delay-2">A proprietary estate intelligence system designed to detect, prevent, and resolve issues before they exist.</p>
+      <p class="section-text reveal reveal-delay-3" style="margin: 0 auto; text-align:center;">
+        We implement a discreet layer of sensor-driven intelligence operating continuously to identify risks before they escalate into costly structural damage.
+      </p>
+    </div>
+    <div class="intel-grid">
+      <div class="intel-item reveal">
+        <div class="intel-icon">💧</div>
+        <div class="intel-title">Water Leak Detection</div>
+        <div class="intel-desc">Real-time sensors throughout the property, alerting before damage occurs.</div>
+      </div>
+      <div class="intel-item reveal reveal-delay-1">
+        <div class="intel-icon">🌡</div>
+        <div class="intel-title">Humidity & Mold Risk</div>
+        <div class="intel-desc">Continuous environmental monitoring calibrated for Florida's climate.</div>
+      </div>
+      <div class="intel-item reveal reveal-delay-2">
+        <div class="intel-icon">❄️</div>
+        <div class="intel-title">HVAC Performance Tracking</div>
+        <div class="intel-desc">Predictive analytics that flag efficiency drops before failure.</div>
+      </div>
+      <div class="intel-item reveal reveal-delay-1">
+        <div class="intel-icon">⚡</div>
+        <div class="intel-title">Energy Anomaly Detection</div>
+        <div class="intel-desc">Instant alerts on irregular consumption patterns across all systems.</div>
+      </div>
+      <div class="intel-item reveal reveal-delay-2">
+        <div class="intel-icon">🏠</div>
+        <div class="intel-title">Smart Home Integration</div>
+        <div class="intel-desc">Seamless connection with existing automation and security platforms.</div>
+      </div>
+      <div class="intel-item reveal reveal-delay-3">
+        <div class="intel-icon">🛡</div>
+        <div class="intel-title">Continuous Intelligence</div>
+        <div class="intel-desc">All systems operate 24/7, year-round, with full reporting visibility.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <span class="label section-label reveal">Full-Spectrum Management</span>
+    <h2 class="section-title reveal reveal-delay-1">Full-Service <em>Estate Operations</em></h2>
+    <div class="services-grid">
+      <div class="service-item reveal">
+        <div class="service-num">01</div>
+        <div class="service-name">Vendor Management</div>
+        <div class="service-desc">Landscaping, pool maintenance, repairs — fully coordinated, never your concern.</div>
+      </div>
+      <div class="service-item reveal reveal-delay-1">
+        <div class="service-num">02</div>
+        <div class="service-name">Housekeeping Oversight</div>
+        <div class="service-desc">Five-star standards enforced across every surface and detail of your home.</div>
+      </div>
+      <div class="service-item reveal reveal-delay-2">
+        <div class="service-num">03</div>
+        <div class="service-name">Preventive Maintenance</div>
+        <div class="service-desc">Proactive scheduling of all maintenance cycles before issues arise.</div>
+      </div>
+      <div class="service-item reveal reveal-delay-3">
+        <div class="service-num">04</div>
+        <div class="service-name">Weekly Inspections</div>
+        <div class="service-desc">Structured property audits with detailed reporting delivered to you.</div>
+      </div>
+      <div class="service-item reveal">
+        <div class="service-num">05</div>
+        <div class="service-name">Smart Home & Sensors</div>
+        <div class="service-desc">Ella Intelligence™ monitoring across all critical property systems.</div>
+      </div>
+      <div class="service-item reveal reveal-delay-1">
+        <div class="service-num">06</div>
+        <div class="service-name">Hurricane Readiness</div>
+        <div class="service-desc">Full preparation, securing, and post-storm inspection and recovery.</div>
+      </div>
+      <div class="service-item reveal reveal-delay-2">
+        <div class="service-num">07</div>
+        <div class="service-name">Vehicle & Asset Preparation</div>
+        <div class="service-desc">Maintenance scheduling and readiness for all property vehicles and assets.</div>
+      </div>
+      <div class="service-item reveal reveal-delay-3">
+        <div class="service-num">08</div>
+        <div class="service-name">Lifestyle Concierge</div>
+        <div class="service-desc">Travel preparation, arrivals, reservations, and personalized requests.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARRIVAL -->
+<section id="arrival">
+  <div class="container">
+    <div class="arrival-inner">
+      <span class="label section-label reveal">The Arrival Experience</span>
+      <h2 class="section-title reveal reveal-delay-1">Always Ready.<br><em>Always Perfect.</em></h2>
+      <div class="divider reveal reveal-delay-2"></div>
+      <p class="arrival-tagline reveal reveal-delay-2">"A home that anticipates your presence before you arrive."</p>
+      <p class="section-text reveal reveal-delay-3" style="margin: 0 auto; text-align: center;">
+        Every residence is maintained in a constant state of readiness — climate-controlled, immaculate, stocked, and prepared for immediate arrival at any time.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- EXCLUSIVITY -->
+<section id="exclusivity">
+  <div class="container" style="text-align:center;">
+    <span class="reveal excl-number">12</span>
+    <p class="excl-caption reveal">Private Estates. Maximum Attention.</p>
+    <span class="label section-label reveal" style="display:inline-block; margin-bottom:24px;">Exclusivity By Design</span>
+    <h2 class="section-title reveal reveal-delay-1" style="max-width:640px; margin: 0 auto 24px;">Limited Estates.<br><em>Maximum Attention.</em></h2>
+    <div class="divider reveal reveal-delay-2"></div>
+    <p class="section-text reveal reveal-delay-2" style="margin: 0 auto; text-align:center;">
+      We intentionally limit our portfolio to only 12 private estates across Florida to ensure unmatched attention, discretion, and execution.
+    </p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <span class="label section-label reveal" style="display:block; text-align:center;">Investment</span>
+    <h2 class="section-title reveal reveal-delay-1" style="text-align:center;">Estate Operations <em>Tiers</em></h2>
+    <div class="pricing-grid">
+      <!-- EXECUTIVE -->
+      <div class="pricing-card reveal">
+        <div class="pricing-tier">Tier I</div>
+        <div class="pricing-name">Estate Executive</div>
+        <div class="pricing-price">$15,000</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Full operational management</li>
+          <li>Vendor coordination</li>
+          <li>Weekly inspections</li>
+          <li>Basic concierge services</li>
+          <li>Preventive maintenance scheduling</li>
+        </ul>
+        <a href="https://wa.me/14072023758" class="btn-secondary" style="display:block; text-align:center;">Inquire</a>
+      </div>
+      <!-- ELITE -->
+      <div class="pricing-card featured reveal reveal-delay-1">
+        <div class="pricing-tier">Tier II</div>
+        <div class="pricing-name">Estate Elite</div>
+        <div class="pricing-price">$20,000</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Everything in Executive</li>
+          <li>Ella Intelligence™ monitoring</li>
+          <li>Smart home integration</li>
+          <li>Priority response protocols</li>
+          <li>Hurricane readiness</li>
+        </ul>
+        <a href="https://wa.me/14072023758" class="btn-primary" style="display:block; text-align:center;">Inquire</a>
+      </div>
+      <!-- SOVEREIGN -->
+      <div class="pricing-card reveal reveal-delay-2">
+        <div class="pricing-tier">Tier III</div>
+        <div class="pricing-name">Estate Sovereign</div>
+        <div class="pricing-price">$45,000</div>
+        <div class="pricing-period">per month</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Full estate operation</li>
+          <li>Advanced intelligence system</li>
+          <li>Full lifestyle concierge</li>
+          <li>Vehicle & asset management</li>
+          <li>White-glove service</li>
+          <li>Dedicated estate manager</li>
+        </ul>
+        <a href="https://wa.me/14072023758" class="btn-secondary" style="display:block; text-align:center;">Inquire</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section id="trust">
+  <div class="container">
+    <span class="label section-label reveal" style="display:block; text-align:center;">Standards of Excellence</span>
+    <h2 class="section-title reveal reveal-delay-1" style="text-align:center; max-width:600px; margin: 0 auto;">Excellence <em>Beyond Standards</em></h2>
+    <div class="divider reveal reveal-delay-2"></div>
+    <p class="section-text reveal reveal-delay-2" style="margin: 0 auto 0; text-align:center;">
+      Built with the same operational standards used in private aviation, high-end hospitality, and superyacht management — where precision, reliability, and discretion are non-negotiable.
+    </p>
+    <div class="trust-pillars">
+      <div class="trust-pillar reveal">
+        <div class="trust-pillar-icon">✈️</div>
+        <div class="trust-pillar-title">Aviation-Grade Precision</div>
+        <div class="trust-pillar-text">Every protocol engineered to the same standards as private aviation operations, where failure is simply not an option.</div>
+      </div>
+      <div class="trust-pillar reveal reveal-delay-1">
+        <div class="trust-pillar-icon">🛥</div>
+        <div class="trust-pillar-title">Superyacht Discretion</div>
+        <div class="trust-pillar-text">Absolute confidentiality and white-glove service modeled on the world's most exclusive maritime operations.</div>
+      </div>
+      <div class="trust-pillar reveal reveal-delay-2">
+        <div class="trust-pillar-icon">🏨</div>
+        <div class="trust-pillar-title">Hospitality Excellence</div>
+        <div class="trust-pillar-text">Five-star hotel management philosophy applied to your private residence, at every moment.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-inner">
+      <span class="label section-label reveal" style="display:block;">Effortless Ownership</span>
+      <h2 class="cta-title reveal reveal-delay-1">Experience Effortless<br><em>Ownership</em></h2>
+      <div class="divider reveal reveal-delay-2"></div>
+      <p class="cta-body reveal reveal-delay-2">
+        Your home was never meant to be managed.<br>
+        It was meant to be lived in — effortlessly.
+      </p>
+      <div class="reveal reveal-delay-3">
+        <a href="https://wa.me/14072023758" class="btn-primary">Request Private Introduction</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo-name">Ella & Co.</div>
+      <div class="footer-logo-sub">Private Estate Operations</div>
+    </div>
+    <div class="footer-center">
+      <div class="footer-referral">By referral or private introduction only</div>
+    </div>
+    <div class="footer-contact">
+      <div class="footer-location">Florida, United States</div>
+      <div class="footer-phone">+1 (407) 202-3758</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Ella & Co. — Private Estate Operations. All rights reserved.</span>
+    <span class="footer-copy" style="color: var(--gold); opacity: 0.5;">◆</span>
+    <span class="footer-copy">Florida · Confidential</span>
+  </div>
+</footer>
+
+<!-- WHATSAPP -->
+<a href="https://wa.me/14072023758" class="whatsapp-btn" target="_blank" title="WhatsApp +1 (407) 202-3758">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<script>
+// Header scroll effect
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Scroll reveal
+const revealEls = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => observer.observe(el));
+
+// Hero immediate reveal
+setTimeout(() => {
+  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
+}, 100);
+</script>
+</body>
 </html>
