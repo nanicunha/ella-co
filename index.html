@@ -154,7 +154,7 @@ nav a:hover { color: var(--gold-light); }
 .hero-bg-img {
   position: absolute; inset: 0; z-index: -1;
   background: url('https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1800&q=80') center/cover no-repeat;
-  opacity: 0.07;
+  opacity: 0.18;
 }
 .hero-lines {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
@@ -288,7 +288,7 @@ section { padding: 120px 40px; position: relative; }
 .problem-visual::before {
   content: ''; position: absolute; inset: 0;
   background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80') center/cover;
-  opacity: 0.25;
+  opacity: 0.65;
 }
 .problem-visual::after {
   content: ''; position: absolute; inset: 0;
@@ -305,7 +305,7 @@ section { padding: 120px 40px; position: relative; }
 .solution-visual::before {
   content: ''; position: absolute; inset: 0;
   background: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=900&q=80') center/cover;
-  opacity: 0.3;
+  opacity: 0.7;
 }
 .solution-visual::after {
   content: ''; position: absolute; inset: 0;
@@ -490,7 +490,13 @@ footer {
 }
 .footer-contact { text-align: right; }
 .footer-location { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; }
-.footer-phone { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--gold-light); }
+.footer-phone {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem; color: var(--gold-light);
+  text-decoration: none; display: inline-block;
+  transition: opacity 0.3s;
+}
+.footer-phone:hover { opacity: 0.7; }
 .footer-bottom {
   max-width: 1100px; margin: 40px auto 0;
   padding-top: 24px; border-top: 1px solid rgba(168,178,192,0.04);
@@ -866,7 +872,7 @@ footer {
     </div>
     <div class="footer-contact">
       <div class="footer-location">Florida, United States</div>
-      <div class="footer-phone">+1 (407) 202-3758</div>
+      <a href="tel:+14072023758" class="footer-phone">+1 (407) 202-3758</a>
     </div>
   </div>
   <div class="footer-bottom">
