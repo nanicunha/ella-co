@@ -8,577 +8,232 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --navy: #080d1a;
-  --navy-mid: #0d1526;
-  --navy-light: #152035;
-  --black: #060810;
-  --silver: #a8b2c0;
-  --silver-light: #c8d0da;
-  --silver-bright: #e2e8ef;
-  --gold: #c9a96e;
-  --gold-light: #e0c898;
-  --white: #f5f7fa;
-  --text-muted: #6b7a8d;
-}
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  background: var(--black);
-  color: var(--silver-light);
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 300;
-  overflow-x: hidden;
-  cursor: default;
-}
-
-/* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: var(--black); }
-::-webkit-scrollbar-thumb { background: var(--gold); }
-
-/* ─── NOISE OVERLAY ─── */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: 0.4;
-}
-
-/* ─── TYPOGRAPHY ─── */
-.serif { font-family: 'Cormorant Garamond', serif; }
-.label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.65rem; font-weight: 500;
-  letter-spacing: 0.25em; text-transform: uppercase;
-  color: var(--gold); opacity: 0.9;
-}
-
-/* ─── FADE-IN ANIMATION ─── */
-.reveal {
-  opacity: 0; transform: translateY(32px);
-  transition: opacity 0.9s cubic-bezier(.16,1,.3,1), transform 0.9s cubic-bezier(.16,1,.3,1);
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.22s; }
-.reveal-delay-3 { transition-delay: 0.36s; }
-.reveal-delay-4 { transition-delay: 0.5s; }
-
-/* ─── GOLD DIVIDER ─── */
-.divider {
-  width: 40px; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  margin: 28px auto;
-}
-.divider-left { margin: 28px 0; }
-
-/* ─── HEADER ─── */
-header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 22px 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: linear-gradient(to bottom, rgba(6,8,16,0.95) 0%, rgba(6,8,16,0) 100%);
-  transition: background 0.4s;
-}
-header.scrolled {
-  background: rgba(6,8,16,0.97);
-  border-bottom: 1px solid rgba(168,178,192,0.08);
-  backdrop-filter: blur(20px);
-}
-.header-logo {
-  display: flex; align-items: center; gap: 14px; text-decoration: none;
-}
-.logo-icon {
-  width: 38px; height: 38px;
-  border: 1px solid rgba(201,169,110,0.5);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-  background: radial-gradient(circle at 40% 40%, rgba(201,169,110,0.08), transparent);
-}
-.logo-icon::after {
-  content: 'E';
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.1rem; font-weight: 400;
-  color: var(--gold); letter-spacing: 0.05em;
-}
-.logo-text-group { display: flex; flex-direction: column; gap: 1px; }
-.logo-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.1rem; font-weight: 400; letter-spacing: 0.12em;
-  color: var(--silver-bright);
-}
-.logo-sub {
-  font-size: 0.55rem; font-weight: 400; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--gold); opacity: 0.75;
-}
-nav { display: flex; gap: 40px; align-items: center; }
-nav a {
-  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--silver); text-decoration: none;
-  transition: color 0.3s;
-}
-nav a:hover { color: var(--gold-light); }
-.nav-cta {
-  padding: 10px 24px;
-  border: 1px solid rgba(201,169,110,0.5);
-  color: var(--gold) !important;
-  transition: all 0.3s !important;
-}
-.nav-cta:hover {
-  background: rgba(201,169,110,0.08) !important;
-  border-color: var(--gold) !important;
-}
-
-/* ─── HERO ─── */
-#hero {
-  min-height: 100vh; position: relative;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  text-align: center;
-  padding: 120px 40px 80px;
-  overflow: hidden;
-}
-.hero-bg {
-  position: absolute; inset: 0; z-index: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(13,21,38,0.7) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(201,169,110,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 50% at 80% 10%, rgba(168,178,192,0.03) 0%, transparent 50%),
-    linear-gradient(180deg, var(--black) 0%, #080e1c 50%, #060810 100%);
-}
-.hero-bg-img {
-  position: absolute; inset: 0; z-index: -1;
-  background: url('https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1800&q=80') center/cover no-repeat;
-  opacity: 0.45;
-}
-.hero-lines {
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(0deg, rgba(201,169,110,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201,169,110,0.03) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
-}
-.hero-content { position: relative; z-index: 2; max-width: 860px; }
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 10px;
-  border: 1px solid rgba(201,169,110,0.25);
-  padding: 8px 20px; margin-bottom: 52px;
-  background: rgba(201,169,110,0.04);
-  backdrop-filter: blur(10px);
-}
-.hero-badge span {
-  font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--gold); font-weight: 400;
-}
-.hero-badge::before, .hero-badge::after {
-  content: '◆'; font-size: 0.4rem; color: var(--gold); opacity: 0.5;
-}
-.qualifier {
-  font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--silver); font-weight: 300; margin-bottom: 28px;
-  opacity: 0.6;
-}
-h1.hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.8rem, 6vw, 5.2rem);
-  font-weight: 300; line-height: 1.1;
-  color: var(--white); letter-spacing: 0.01em;
-  margin-bottom: 28px;
-}
-h1.hero-title em { font-style: italic; color: var(--gold-light); }
-.hero-sub {
-  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: var(--silver); font-weight: 300; margin-bottom: 32px;
-}
-.hero-desc {
-  font-size: 0.95rem; line-height: 1.85; color: var(--silver);
-  max-width: 580px; margin: 0 auto 52px; font-weight: 300; opacity: 0.8;
-}
-.hero-qualifier-box {
-  display: inline-block;
-  border-left: 2px solid var(--gold);
-  padding: 12px 24px; margin-bottom: 52px;
-  background: rgba(201,169,110,0.04);
-  text-align: left;
-}
-.hero-qualifier-box p {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(0.75rem, 1.3vw, 1.05rem);
-  font-weight: 400; font-style: italic;
-  color: var(--silver-bright); line-height: 1.4;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-.btn-primary {
-  display: inline-block; padding: 16px 44px;
-  background: linear-gradient(135deg, var(--gold) 0%, #b8924a 100%);
-  color: var(--black); text-decoration: none;
-  font-size: 0.62rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase;
-  position: relative; overflow: hidden;
-  transition: all 0.4s cubic-bezier(.16,1,.3,1);
-  box-shadow: 0 8px 40px rgba(201,169,110,0.25), 0 2px 8px rgba(0,0,0,0.3);
-}
-.btn-primary::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-  opacity: 0; transition: opacity 0.3s;
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 60px rgba(201,169,110,0.35), 0 4px 16px rgba(0,0,0,0.4); }
-.btn-primary:hover::before { opacity: 1; }
-.btn-secondary {
-  display: inline-block; padding: 16px 44px;
-  border: 1px solid rgba(201,169,110,0.4);
-  color: var(--gold); text-decoration: none;
-  font-size: 0.62rem; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase;
-  transition: all 0.4s;
-  background: transparent;
-}
-.btn-secondary:hover { background: rgba(201,169,110,0.06); border-color: var(--gold); }
-.hero-scroll {
-  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2;
-  opacity: 0.4;
-}
-.hero-scroll span { font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); }
-.scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--silver), transparent); animation: scrollpulse 2s infinite; }
-@keyframes scrollpulse { 0%,100% { opacity: 0.4; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(0.6); } }
-
-/* ─── SECTION BASE ─── */
-section { padding: 120px 40px; position: relative; }
-.container { max-width: 1100px; margin: 0 auto; }
-.section-label { display: block; margin-bottom: 24px; }
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 4vw, 3.4rem);
-  font-weight: 300; color: var(--white); letter-spacing: 0.02em;
-  line-height: 1.15;
-}
-.section-title em { font-style: italic; color: var(--gold-light); }
-.section-text {
-  font-size: 0.95rem; line-height: 1.9; color: var(--silver);
-  font-weight: 300; max-width: 620px; opacity: 0.85;
-}
-
-/* ─── SECTION: PROBLEM ─── */
-#problem { background: var(--navy); }
-#problem::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse 60% 60% at 80% 50%, rgba(201,169,110,0.03), transparent);
-  pointer-events: none;
-}
-.problem-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-.problem-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 10rem; font-weight: 300;
-  line-height: 1; color: rgba(201,169,110,0.06);
-  letter-spacing: -0.05em; user-select: none;
-  position: absolute; right: -20px; top: -40px;
-}
-.problem-visual {
-  position: relative; height: 420px;
-  background: linear-gradient(135deg, var(--navy-mid), var(--navy-light));
-  overflow: hidden;
-}
-.problem-visual::before {
-  content: ''; position: absolute; inset: 0;
-  background: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80') center/cover;
-  opacity: 0.9;
-}
-.problem-visual::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(8,13,26,0.2), rgba(201,169,110,0.03));
-}
-
-/* ─── SECTION: SOLUTION ─── */
-#solution { background: var(--black); }
-.solution-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-.solution-visual {
-  position: relative; height: 480px;
-  background: var(--navy-mid); overflow: hidden;
-}
-.solution-visual::before {
-  content: ''; position: absolute; inset: 0;
-  background: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=900&q=80') center/cover;
-  opacity: 0.9;
-}
-.solution-visual::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(to right, rgba(6,8,16,0.2), transparent);
-}
-
-/* ─── SECTION: ELLA INTELLIGENCE ─── */
-#intelligence {
-  background: linear-gradient(180deg, var(--navy) 0%, var(--black) 100%);
-  text-align: center;
-}
-.intelligence-inner { max-width: 800px; margin: 0 auto; }
-.intelligence-subtitle {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.15rem; font-style: italic; color: var(--silver); font-weight: 300;
-  margin-bottom: 32px; opacity: 0.7;
-}
-.intel-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-  background: rgba(168,178,192,0.08); margin-top: 60px;
-}
-.intel-item {
-  background: var(--navy); padding: 36px 28px; text-align: left;
-  position: relative; overflow: hidden;
-  transition: background 0.4s;
-}
-.intel-item:hover { background: var(--navy-light); }
-.intel-item::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent);
-  opacity: 0; transition: opacity 0.4s;
-}
-.intel-item:hover::before { opacity: 1; }
-.intel-icon { font-size: 1.3rem; margin-bottom: 16px; opacity: 0.7; }
-.intel-title {
-  font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--silver-bright); font-weight: 400; margin-bottom: 8px;
-}
-.intel-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
-
-/* ─── SECTION: SERVICES ─── */
-#services { background: var(--black); }
-.services-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(168,178,192,0.07); margin-top: 60px; }
-.service-item {
-  background: var(--navy); padding: 40px 28px;
-  border-bottom: 2px solid transparent;
-  transition: all 0.4s;
-}
-.service-item:hover { background: var(--navy-light); border-bottom-color: var(--gold); }
-.service-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.5rem; font-weight: 300; color: rgba(201,169,110,0.2);
-  line-height: 1; margin-bottom: 20px;
-}
-.service-name {
-  font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
-  color: var(--silver-bright); font-weight: 400; margin-bottom: 12px; line-height: 1.5;
-}
-.service-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.75; }
-
-/* ─── SECTION: ARRIVAL ─── */
-#arrival {
-  background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
-  text-align: center; overflow: hidden;
-}
-#arrival::before {
-  content: ''; position: absolute; inset: 0;
-  background: url('https://images.unsplash.com/photo-1615529328331-f8917597711f?w=1600&q=80') center/cover;
-  opacity: 0.2;
-}
-.arrival-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
-.arrival-tagline {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-  font-weight: 300; font-style: italic;
-  color: var(--gold-light); margin: 32px 0; line-height: 1.3;
-}
-
-/* ─── SECTION: EXCLUSIVITY ─── */
-#exclusivity { background: var(--black); text-align: center; }
-.excl-number {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(5rem, 15vw, 12rem);
-  font-weight: 300; line-height: 0.9;
-  background: linear-gradient(180deg, rgba(201,169,110,0.6) 0%, rgba(201,169,110,0.1) 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; display: block; margin-bottom: 8px;
-}
-.excl-caption {
-  font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold); opacity: 0.7; margin-bottom: 48px;
-}
-
-/* ─── SECTION: PRICING ─── */
-#pricing { background: var(--navy); }
-.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(168,178,192,0.07); margin-top: 60px; }
-.pricing-card { background: var(--navy-mid); padding: 52px 36px; position: relative; transition: transform 0.4s; }
-.pricing-card:hover { transform: translateY(-8px); z-index: 2; }
-.pricing-card.featured { background: var(--navy-light); }
-.pricing-card.featured::before {
-  content: 'RECOMMENDED'; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
-  background: linear-gradient(135deg, var(--gold), #b8924a);
-  color: var(--black); font-size: 0.55rem; letter-spacing: 0.2em;
-  padding: 6px 20px; font-weight: 600;
-}
-.pricing-tier { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
-.pricing-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.8rem; font-weight: 400; color: var(--white); margin-bottom: 8px;
-}
-.pricing-price {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.8rem; font-weight: 300; color: var(--gold-light);
-  margin: 24px 0 4px; line-height: 1;
-}
-.pricing-period { font-size: 0.65rem; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 36px; }
-.pricing-divider { width: 100%; height: 1px; background: rgba(168,178,192,0.1); margin-bottom: 32px; }
-.pricing-features { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 40px; }
-.pricing-features li {
-  font-size: 0.8rem; color: var(--silver); font-weight: 300;
-  padding-left: 20px; position: relative; line-height: 1.4;
-}
-.pricing-features li::before {
-  content: '—'; position: absolute; left: 0; color: var(--gold); opacity: 0.6;
-}
-
-/* ─── SECTION: TRUST ─── */
-#trust { background: var(--black); text-align: center; }
-.trust-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 60px; }
-.trust-pillar { padding: 40px 28px; border: 1px solid rgba(168,178,192,0.07); }
-.trust-pillar-icon { font-size: 1.8rem; margin-bottom: 20px; opacity: 0.5; }
-.trust-pillar-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.3rem; font-weight: 400; color: var(--white); margin-bottom: 12px;
-}
-.trust-pillar-text { font-size: 0.82rem; color: var(--text-muted); line-height: 1.75; }
-
-/* ─── SECTION: FINAL CTA ─── */
-#cta {
-  background: var(--navy);
-  text-align: center; overflow: hidden;
-}
-#cta::before {
-  content: ''; position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,169,110,0.06), transparent),
-    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(13,21,38,0.8), transparent);
-  pointer-events: none;
-}
-.cta-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
-.cta-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.4rem, 5vw, 4rem);
-  font-weight: 300; color: var(--white); margin-bottom: 24px;
-  line-height: 1.1;
-}
-.cta-body {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.2rem; font-weight: 300; font-style: italic;
-  color: var(--silver); line-height: 1.7; margin-bottom: 52px; opacity: 0.8;
-}
-
-/* ─── FOOTER ─── */
-footer {
-  background: var(--black); padding: 60px 40px;
-  border-top: 1px solid rgba(168,178,192,0.07);
-}
-.footer-inner {
-  max-width: 1100px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 32px;
-}
-.footer-logo-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.5rem; font-weight: 300; color: var(--white); letter-spacing: 0.08em;
-}
-.footer-logo-sub { font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); opacity: 0.6; margin-top: 4px; }
-.footer-center { text-align: center; }
-.footer-referral {
-  font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--text-muted); border: 1px solid rgba(168,178,192,0.1);
-  padding: 10px 20px; display: inline-block;
-}
-.footer-contact { text-align: right; }
-.footer-location { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; }
-.footer-phone {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.15rem; color: var(--gold-light);
-  text-decoration: none; display: inline-block;
-  transition: opacity 0.3s;
-}
-.footer-phone:hover { opacity: 0.7; }
-.footer-bottom {
-  max-width: 1100px; margin: 40px auto 0;
-  padding-top: 24px; border-top: 1px solid rgba(168,178,192,0.04);
-  display: flex; justify-content: space-between; align-items: center;
-}
-.footer-copy { font-size: 0.62rem; color: var(--text-muted); letter-spacing: 0.1em; }
-
-/* ─── WHATSAPP BUTTON ─── */
-.whatsapp-btn {
-  position: fixed; bottom: 32px; right: 32px; z-index: 200;
-  width: 58px; height: 58px; border-radius: 50%;
-  background: linear-gradient(135deg, #25D366, #1da851);
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 32px rgba(37,211,102,0.35), 0 2px 8px rgba(0,0,0,0.3);
-  text-decoration: none;
-  transition: transform 0.3s, box-shadow 0.3s;
-  animation: float 3s ease-in-out infinite;
-}
-.whatsapp-btn:hover { transform: scale(1.1); box-shadow: 0 12px 44px rgba(37,211,102,0.5); }
-.whatsapp-btn svg { width: 26px; height: 26px; fill: white; }
-@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-.whatsapp-btn:hover { transform: scale(1.1) !important; }
-
-/* ─── RESPONSIVE ─── */
-@media(max-width: 900px) {
-  header { padding: 20px 24px; }
-  nav { display: none; }
-  section { padding: 80px 24px; }
-  .problem-layout, .solution-layout { grid-template-columns: 1fr; gap: 40px; }
-  .problem-visual, .solution-visual { height: 260px; }
-  .intel-grid { grid-template-columns: 1fr 1fr; }
-  .services-grid { grid-template-columns: 1fr 1fr; }
-  .pricing-grid { grid-template-columns: 1fr; }
-  .trust-pillars { grid-template-columns: 1fr; }
-  .footer-inner { flex-direction: column; text-align: center; }
-  .footer-contact { text-align: center; }
-  .footer-bottom { flex-direction: column; gap: 12px; }
-}
-@media(max-width: 600px) {
-  .intel-grid { grid-template-columns: 1fr; }
-  .services-grid { grid-template-columns: 1fr; }
+:root{--navy:#080d1a;--navy-mid:#0d1526;--navy-light:#152035;--black:#060810;--silver:#a8b2c0;--silver-light:#c8d0da;--silver-bright:#e2e8ef;--gold:#c9a96e;--gold-light:#e0c898;--white:#f5f7fa;--text-muted:#6b7a8d}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--silver-light);font-family:'Montserrat',sans-serif;font-weight:300;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--black)}::-webkit-scrollbar-thumb{background:var(--gold)}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+.label{font-family:'Montserrat',sans-serif;font-size:.62rem;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);opacity:.9}
+.divider{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:28px auto}
+.divider-left{margin:28px 0}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .95s cubic-bezier(.16,1,.3,1),transform .95s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.22s}.reveal-delay-3{transition-delay:.36s}.reveal-delay-4{transition-delay:.5s}
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 60px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(6,8,16,.95),rgba(6,8,16,0));transition:background .4s}
+header.scrolled{background:rgba(6,8,16,.97);border-bottom:1px solid rgba(168,178,192,.07);backdrop-filter:blur(20px)}
+.header-logo{display:flex;align-items:center;gap:14px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border:1px solid rgba(201,169,110,.45);border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 40% 40%,rgba(201,169,110,.07),transparent)}
+.logo-icon::after{content:'E';font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold)}
+.logo-text-group{display:flex;flex-direction:column;gap:1px}
+.logo-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;letter-spacing:.12em;color:var(--silver-bright)}
+.logo-sub{font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.7}
+nav{display:flex;gap:38px;align-items:center}
+nav a{font-size:.6rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--silver);text-decoration:none;transition:color .3s}
+nav a:hover{color:var(--gold-light)}
+.nav-cta{padding:9px 22px;border:1px solid rgba(201,169,110,.45);color:var(--gold)!important}
+.nav-cta:hover{background:rgba(201,169,110,.07)!important;border-color:var(--gold)!important}
+.btn-primary{display:inline-block;padding:15px 42px;background:linear-gradient(135deg,var(--gold),#b8924a);color:var(--black);text-decoration:none;font-size:.6rem;font-weight:500;letter-spacing:.25em;text-transform:uppercase;transition:all .4s cubic-bezier(.16,1,.3,1);box-shadow:0 8px 40px rgba(201,169,110,.22),0 2px 8px rgba(0,0,0,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 60px rgba(201,169,110,.32)}
+.btn-secondary{display:inline-block;padding:15px 42px;border:1px solid rgba(201,169,110,.4);color:var(--gold);text-decoration:none;font-size:.6rem;font-weight:400;letter-spacing:.25em;text-transform:uppercase;transition:all .4s;background:transparent}
+.btn-secondary:hover{background:rgba(201,169,110,.06);border-color:var(--gold)}
+section{padding:120px 40px;position:relative}
+.container{max-width:1100px;margin:0 auto}
+.section-label{display:block;margin-bottom:22px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,4vw,3.4rem);font-weight:300;color:var(--white);letter-spacing:.02em;line-height:1.15}
+.section-title em{font-style:italic;color:var(--gold-light)}
+.section-text{font-size:.93rem;line-height:1.9;color:var(--silver);font-weight:300;max-width:600px;opacity:.85}
+.micro-phrase{font-family:'Cormorant Garamond',serif;font-size:.88rem;font-style:italic;color:var(--gold);opacity:.55;letter-spacing:.08em;display:block;margin-top:32px}
+/* HERO */
+#hero{min-height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px;overflow:hidden}
+.hero-bg-img{position:absolute;inset:0;z-index:0;background:url('https://images.unsplash.com/photo-1613977257363-707ba9348227?w=1800&q=80') center/cover no-repeat;opacity:.45}
+.hero-bg{position:absolute;inset:0;z-index:1;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(6,8,16,.75) 0%,transparent 70%),linear-gradient(180deg,rgba(6,8,16,.85) 0%,rgba(8,13,26,.6) 50%,rgba(6,8,16,.9) 100%)}
+.hero-lines{position:absolute;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(0deg,rgba(201,169,110,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,.025) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 30%,transparent 100%)}
+.hero-content{position:relative;z-index:2;max-width:860px}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(201,169,110,.22);padding:8px 20px;margin-bottom:48px;background:rgba(201,169,110,.04);backdrop-filter:blur(10px)}
+.hero-badge span{font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.hero-badge::before,.hero-badge::after{content:'◆';font-size:.38rem;color:var(--gold);opacity:.45}
+.qualifier{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--silver);font-weight:300;margin-bottom:24px;opacity:.55}
+h1.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,6vw,5.2rem);font-weight:300;line-height:1.1;color:var(--white);letter-spacing:.01em;margin-bottom:24px}
+h1.hero-title em{font-style:italic;color:var(--gold-light)}
+.hero-sub{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--silver);font-weight:300;margin-bottom:28px;opacity:.65}
+.hero-desc{font-size:.93rem;line-height:1.9;color:var(--silver);max-width:560px;margin:0 auto 44px;font-weight:300;opacity:.8}
+.hero-qualifier-box{display:inline-block;border-left:2px solid var(--gold);padding:14px 26px;margin-bottom:48px;background:rgba(201,169,110,.04);text-align:left}
+.hero-qualifier-box p{font-family:'Playfair Display',serif;font-size:clamp(.75rem,1.3vw,1.05rem);font-weight:400;font-style:italic;color:var(--silver-bright);line-height:1.4;letter-spacing:.01em;white-space:nowrap}
+.hero-scroll{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2;opacity:.35}
+.hero-scroll span{font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:var(--silver)}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--silver),transparent);animation:scrollpulse 2s infinite}
+@keyframes scrollpulse{0%,100%{opacity:.4}50%{opacity:1}}
+/* CLARITY */
+#clarity{background:var(--navy);overflow:hidden}
+#clarity::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 100% 50%,rgba(201,169,110,.03),transparent);pointer-events:none}
+.clarity-layout{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+.clarity-opening{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:300;font-style:italic;color:var(--white);line-height:1.3;margin-bottom:32px}
+.clarity-right{border-left:1px solid rgba(168,178,192,.08);padding-left:60px}
+.clarity-detail{font-size:.88rem;color:var(--silver);line-height:1.95;font-weight:300;opacity:.8;margin-bottom:24px}
+.clarity-list{list-style:none;display:flex;flex-direction:column;gap:16px}
+.clarity-list li{font-size:.78rem;color:var(--silver-bright);font-weight:300;padding-left:20px;position:relative;letter-spacing:.04em}
+.clarity-list li::before{content:'—';position:absolute;left:0;color:var(--gold);opacity:.7}
+/* PROBLEM */
+#problem{background:var(--black)}
+.problem-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.problem-visual{position:relative;height:440px;background:var(--navy-mid);overflow:hidden}
+.problem-visual::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80') center/cover;opacity:.9}
+.problem-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(8,13,26,.2),rgba(201,169,110,.03))}
+.problem-num{position:absolute;right:-20px;top:-40px;font-family:'Cormorant Garamond',serif;font-size:10rem;font-weight:300;color:rgba(201,169,110,.06);letter-spacing:-.05em;user-select:none;line-height:1}
+/* SOLUTION */
+#solution{background:var(--navy)}
+.solution-layout{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.solution-visual{position:relative;height:480px;background:var(--navy-mid);overflow:hidden}
+.solution-visual::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=900&q=80') center/cover;opacity:.9}
+.solution-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(to right,rgba(6,8,16,.2),transparent)}
+/* I2 */
+#i2{background:var(--black);text-align:center;overflow:hidden}
+#i2::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(201,169,110,.04),transparent);pointer-events:none}
+.i2-symbol{font-family:'Cormorant Garamond',serif;font-size:clamp(5rem,14vw,10rem);font-weight:300;line-height:.9;background:linear-gradient(180deg,rgba(201,169,110,.7) 0%,rgba(201,169,110,.1) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;margin-bottom:16px;letter-spacing:-.02em}
+.i2-equation{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:52px}
+.i2-inner{max-width:760px;margin:0 auto}
+.i2-subtitle{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:300;color:var(--white);margin-bottom:24px;line-height:1.3}
+.i2-body{font-size:.93rem;color:var(--silver);line-height:1.95;font-weight:300;opacity:.8;margin-bottom:60px}
+.i2-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(168,178,192,.07)}
+.i2-pillar{background:var(--navy);padding:44px 32px;text-align:left;transition:background .4s;position:relative}
+.i2-pillar:hover{background:var(--navy-light)}
+.i2-pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.3),transparent);opacity:0;transition:opacity .4s}
+.i2-pillar:hover::before{opacity:1}
+.i2-pillar-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:rgba(201,169,110,.15);margin-bottom:20px;line-height:1}
+.i2-pillar-title{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--silver-bright);font-weight:500;margin-bottom:12px}
+.i2-pillar-text{font-size:.82rem;color:var(--text-muted);line-height:1.75}
+/* OPERATIONS */
+#operations{background:var(--navy)}
+.ops-intro{max-width:600px;margin-bottom:64px}
+.ops-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(168,178,192,.07)}
+.ops-item{background:var(--navy-mid);padding:48px 40px;position:relative;overflow:hidden;transition:background .4s}
+.ops-item:hover{background:var(--navy-light)}
+.ops-item::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .4s}
+.ops-item:hover::after{opacity:.5}
+.ops-num{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:rgba(201,169,110,.08);line-height:1;margin-bottom:24px}
+.ops-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--white);margin-bottom:16px;letter-spacing:.02em}
+.ops-desc{font-size:.85rem;color:var(--silver);line-height:1.85;font-weight:300;opacity:.8}
+.ops-tag{display:inline-block;margin-top:20px;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.5;border-bottom:1px solid rgba(201,169,110,.2);padding-bottom:2px}
+/* INTELLIGENCE */
+#intelligence{background:var(--black);text-align:center}
+.intelligence-inner{max-width:720px;margin:0 auto 60px}
+.intelligence-subtitle{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--silver);font-weight:300;margin-bottom:28px;opacity:.7;line-height:1.6}
+.intel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(168,178,192,.07)}
+.intel-item{background:var(--navy);padding:36px 28px;text-align:left;transition:background .4s;position:relative;overflow:hidden}
+.intel-item:hover{background:var(--navy-light)}
+.intel-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,110,.3),transparent);opacity:0;transition:opacity .4s}
+.intel-item:hover::before{opacity:1}
+.intel-icon{font-size:1.2rem;margin-bottom:16px;opacity:.65}
+.intel-title{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--silver-bright);font-weight:400;margin-bottom:8px}
+.intel-desc{font-size:.8rem;color:var(--text-muted);line-height:1.75}
+/* ARRIVAL */
+#arrival{background:linear-gradient(135deg,var(--navy-mid),var(--navy));text-align:center;overflow:hidden}
+#arrival::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1615529328331-f8917597711f?w=1600&q=80') center/cover;opacity:.2}
+.arrival-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.arrival-tagline{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:300;font-style:italic;color:var(--gold-light);margin:28px 0;line-height:1.35}
+/* EXCLUSIVITY */
+#exclusivity{background:var(--black);text-align:center}
+.excl-number{font-family:'Cormorant Garamond',serif;font-size:clamp(5rem,16vw,13rem);font-weight:300;line-height:.9;background:linear-gradient(180deg,rgba(201,169,110,.55) 0%,rgba(201,169,110,.08) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;margin-bottom:8px}
+.excl-caption{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);opacity:.65;margin-bottom:52px}
+.excl-details{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(168,178,192,.07);margin-top:60px}
+.excl-detail{background:var(--navy);padding:36px 28px;font-size:.82rem;color:var(--silver);line-height:1.75;font-weight:300}
+.excl-detail-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--white);margin-bottom:12px;font-weight:400}
+/* ENGAGEMENT */
+#engagement{background:var(--navy)}
+.engagement-note{font-size:.78rem;color:var(--text-muted);font-style:italic;margin-top:40px;text-align:center;letter-spacing:.06em}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(168,178,192,.07);margin-top:60px}
+.pricing-card{background:var(--navy-mid);padding:52px 36px;position:relative;transition:transform .4s}
+.pricing-card:hover{transform:translateY(-8px);z-index:2}
+.pricing-card.featured{background:var(--navy-light)}
+.pricing-card.featured::before{content:'MOST SELECTED';position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),#b8924a);color:var(--black);font-size:.52rem;letter-spacing:.22em;padding:6px 18px;font-weight:600}
+.pricing-tier{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.pricing-name{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:400;color:var(--white);margin-bottom:6px}
+.pricing-starting{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.pricing-price{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:300;color:var(--gold-light);line-height:1}
+.pricing-period{font-size:.6rem;letter-spacing:.15em;color:var(--text-muted);margin-bottom:32px}
+.pricing-divider{width:100%;height:1px;background:rgba(168,178,192,.09);margin-bottom:28px}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:13px;margin-bottom:36px}
+.pricing-features li{font-size:.78rem;color:var(--silver);font-weight:300;padding-left:18px;position:relative;line-height:1.4}
+.pricing-features li::before{content:'—';position:absolute;left:0;color:var(--gold);opacity:.5}
+/* TRUST */
+#trust{background:var(--black);text-align:center}
+.trust-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:56px}
+.trust-pillar{padding:40px 28px;border:1px solid rgba(168,178,192,.06);transition:border-color .4s}
+.trust-pillar:hover{border-color:rgba(201,169,110,.15)}
+.trust-pillar-icon{font-size:1.6rem;margin-bottom:20px;opacity:.45}
+.trust-pillar-title{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:400;color:var(--white);margin-bottom:12px}
+.trust-pillar-text{font-size:.8rem;color:var(--text-muted);line-height:1.8}
+/* CTA */
+#cta{background:var(--navy);text-align:center;overflow:hidden}
+#cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,169,110,.05),transparent);pointer-events:none}
+.cta-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.cta-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,5vw,3.8rem);font-weight:300;color:var(--white);margin-bottom:24px;line-height:1.1}
+.cta-body{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:300;font-style:italic;color:var(--silver);line-height:1.75;margin-bottom:16px;opacity:.75}
+.cta-note{font-size:.72rem;color:var(--text-muted);letter-spacing:.12em;margin-bottom:48px}
+.cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+/* FOOTER */
+footer{background:var(--black);padding:60px 40px;border-top:1px solid rgba(168,178,192,.06)}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:32px}
+.footer-logo-name{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:300;color:var(--white);letter-spacing:.08em}
+.footer-logo-sub{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);opacity:.55;margin-top:4px}
+.footer-referral{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-muted);border:1px solid rgba(168,178,192,.09);padding:10px 20px;display:inline-block}
+.footer-location{font-size:.7rem;color:var(--text-muted);margin-bottom:6px}
+.footer-phone{font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold-light);text-decoration:none;display:inline-block;transition:opacity .3s}
+.footer-phone:hover{opacity:.7}
+.footer-bottom{max-width:1100px;margin:36px auto 0;padding-top:24px;border-top:1px solid rgba(168,178,192,.04);display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:.6rem;color:var(--text-muted);letter-spacing:.1em}
+.whatsapp-btn{position:fixed;bottom:32px;right:32px;z-index:200;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#25D366,#1da851);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(37,211,102,.32),0 2px 8px rgba(0,0,0,.3);text-decoration:none;transition:transform .3s,box-shadow .3s;animation:float 3s ease-in-out infinite}
+.whatsapp-btn:hover{transform:scale(1.1)!important;box-shadow:0 12px 44px rgba(37,211,102,.5)}
+.whatsapp-btn svg{width:24px;height:24px;fill:white}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@media(max-width:900px){
+  header{padding:20px 24px}nav{display:none}section{padding:80px 24px}
+  .clarity-layout,.problem-layout,.solution-layout{grid-template-columns:1fr;gap:40px}
+  .clarity-right{border-left:none;padding-left:0;border-top:1px solid rgba(168,178,192,.08);padding-top:40px}
+  .problem-visual,.solution-visual{height:260px}
+  .i2-pillars,.ops-grid,.pricing-grid,.excl-details,.trust-pillars{grid-template-columns:1fr}
+  .intel-grid{grid-template-columns:1fr 1fr}
+  .footer-inner{flex-direction:column;text-align:center}
+  .footer-contact{text-align:center}
+  .footer-bottom{flex-direction:column;gap:12px}
+}
+@media(max-width:600px){
+  .intel-grid{grid-template-columns:1fr}
+  .hero-qualifier-box p{white-space:normal;font-size:.85rem}
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header id="header">
   <a href="#" class="header-logo">
     <div class="logo-icon"></div>
     <div class="logo-text-group">
-      <span class="logo-name">Ella & Co.</span>
+      <span class="logo-name">Ella &amp; Co.</span>
       <span class="logo-sub">Private Estate Operations</span>
     </div>
   </a>
   <nav>
-    <a href="#problem">The Challenge</a>
-    <a href="#intelligence">Ella Intelligence™</a>
-    <a href="#services">Services</a>
-    <a href="#pricing">Investment</a>
-    <a href="#cta" class="nav-cta">Private Introduction</a>
+    <a href="#clarity">What We Do</a>
+    <a href="#i2">I² Standard</a>
+    <a href="#operations">Operations</a>
+    <a href="#engagement">Engagement</a>
+    <a href="#cta" class="nav-cta">Private Access</a>
   </nav>
 </header>
 
-<!-- HERO -->
 <section id="hero">
   <div class="hero-bg-img"></div>
   <div class="hero-bg"></div>
   <div class="hero-lines"></div>
   <div class="hero-content">
-    <div class="hero-badge reveal">
-      <span>Ella &amp; Co. — Private Estate Operations</span>
-    </div>
+    <div class="hero-badge reveal"><span>Ella &amp; Co. — Private Estate Operations</span></div>
     <p class="qualifier reveal reveal-delay-1">Florida · By Referral Only</p>
-    <h1 class="hero-title reveal reveal-delay-2">
-      Your Home Should Not<br>Feel Like a <em>Second Business</em>
-    </h1>
+    <h1 class="hero-title reveal reveal-delay-2">Your Home Should Not<br>Feel Like a <em>Second Business</em></h1>
     <p class="hero-sub reveal reveal-delay-2">Private Estate Operations for Ultra-Luxury Residences</p>
     <div class="divider reveal reveal-delay-3"></div>
-    <p class="hero-desc reveal reveal-delay-3">
-      We operate exceptional homes with precision, discretion, and predictive intelligence — so owners never need to manage staff, vendors, or property risks.
-    </p>
+    <p class="hero-desc reveal reveal-delay-3">We operate exceptional homes with precision, discretion, and predictive intelligence — so owners never need to manage staff, vendors, or property risks.</p>
     <div class="hero-qualifier-box reveal reveal-delay-3">
       <p>"Designed for owners of $5M+ residences who expect flawless operation without involvement."</p>
     </div>
@@ -586,146 +241,167 @@ footer {
       <a href="https://wa.me/14072023758" class="btn-primary">Request Confidential Consultation</a>
     </div>
   </div>
-  <div class="hero-scroll">
-    <span>Scroll</span>
-    <div class="scroll-line"></div>
-  </div>
+  <div class="hero-scroll"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
 
-<!-- PROBLEM -->
-<section id="problem">
+<section id="clarity">
   <div class="container">
-    <div class="problem-layout">
+    <div class="clarity-layout">
       <div>
-        <span class="label section-label reveal">The Challenge</span>
-        <h2 class="section-title reveal reveal-delay-1">The Hidden Complexity of<br><em>Ultra-Luxury Homes</em></h2>
-        <div class="divider divider-left reveal reveal-delay-2"></div>
-        <p class="section-text reveal reveal-delay-2">
-          A $10M+ residence operates like a mid-size company — requiring coordination of multiple vendors, systems, and maintenance cycles. Without oversight, small issues can become costly structural damage, especially in Florida's climate.
-        </p>
+        <span class="label section-label reveal">What We Do</span>
+        <p class="clarity-opening reveal reveal-delay-1">We run your home.<br>Completely. Invisibly. Flawlessly.</p>
+        <p class="clarity-detail reveal reveal-delay-2">Ella &amp; Co. is a full-service estate operations firm. We assume complete oversight of your private residence — managing every system, every vendor, every person, every cycle. You receive a home that performs at the highest level without a single call, email, or decision required from you.</p>
+        <p class="clarity-detail reveal reveal-delay-2">This is not property management. This is operational command of a private estate — executed with the discipline of private aviation and the discretion of a family office.</p>
+        <em class="micro-phrase reveal reveal-delay-3">Operated, not managed.</em>
       </div>
-      <div class="problem-visual reveal reveal-delay-1">
-        <div class="problem-num">01</div>
+      <div class="clarity-right reveal reveal-delay-2">
+        <p class="clarity-detail" style="margin-bottom:32px;font-size:.78rem;text-transform:uppercase;letter-spacing:.15em;color:var(--gold);opacity:.7;">Our scope includes</p>
+        <ul class="clarity-list">
+          <li>Full operational management of the residence</li>
+          <li>Staff hiring, training, and daily oversight</li>
+          <li>All vendor relationships and scheduling</li>
+          <li>Predictive maintenance and system monitoring</li>
+          <li>Lifestyle readiness and arrival preparation</li>
+          <li>Emergency response and hurricane protocols</li>
+          <li>Renovation and project supervision</li>
+          <li>Asset and vehicle care</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SOLUTION -->
+<section id="problem">
+  <div class="container">
+    <div class="problem-layout">
+      <div>
+        <span class="label section-label reveal">The Reality</span>
+        <h2 class="section-title reveal reveal-delay-1">The Hidden Complexity of<br><em>Ultra-Luxury Homes</em></h2>
+        <div class="divider divider-left reveal reveal-delay-2"></div>
+        <p class="section-text reveal reveal-delay-2">A $10M+ residence operates like a mid-size company — with dozens of vendors, complex systems, and continuous maintenance cycles. In Florida's climate, neglect is not a passive condition. It accelerates.</p>
+        <p class="section-text reveal reveal-delay-3" style="margin-top:20px;">Most owners discover the true cost of mismanagement only after structural damage, failed systems, or compromised security. By then, the cost — financial and personal — is significant.</p>
+        <em class="micro-phrase reveal reveal-delay-3">Precision over presence.</em>
+      </div>
+      <div class="problem-visual reveal reveal-delay-1"><div class="problem-num">01</div></div>
+    </div>
+  </div>
+</section>
+
 <section id="solution">
   <div class="container">
     <div class="solution-layout">
       <div class="solution-visual reveal"></div>
       <div>
-        <span class="label section-label reveal reveal-delay-1">The Solution</span>
-        <h2 class="section-title reveal reveal-delay-2">We Operate Your Home Like a<br><em>Private Estate System</em></h2>
+        <span class="label section-label reveal reveal-delay-1">The Approach</span>
+        <h2 class="section-title reveal reveal-delay-2">We Operate Your Home as a<br><em>Private Estate System</em></h2>
         <div class="divider divider-left reveal reveal-delay-3"></div>
-        <p class="section-text reveal reveal-delay-3">
-          Ella & Co. acts as the executive operational layer of your residence — managing everything from maintenance and vendors to intelligent monitoring and lifestyle readiness.
-        </p>
+        <p class="section-text reveal reveal-delay-3">Ella &amp; Co. becomes the executive operational layer of your residence. From the moment we engage, your home is no longer your concern. Every moving part — staff, systems, vendors, timelines — is managed, monitored, and optimized without your involvement.</p>
+        <p class="section-text reveal reveal-delay-3" style="margin-top:20px;">You receive a single monthly summary. Nothing else reaches you unless you request it.</p>
+        <em class="micro-phrase reveal reveal-delay-4">Silence is part of the service.</em>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ELLA INTELLIGENCE -->
+<section id="i2">
+  <div class="container">
+    <div class="i2-inner">
+      <span class="label section-label reveal" style="display:block;">Proprietary Philosophy</span>
+      <span class="i2-symbol reveal reveal-delay-1">I²</span>
+      <p class="i2-equation reveal reveal-delay-2">Intelligence × Intention</p>
+      <h2 class="i2-subtitle reveal reveal-delay-2">The I² Standard</h2>
+      <div class="divider reveal reveal-delay-3"></div>
+      <p class="i2-body reveal reveal-delay-3">Every estate we operate is governed by a singular philosophy: nothing is reactive. Everything is designed.<br><br>I² is our proprietary operating standard — the convergence of sensor-driven intelligence and deliberate human intention. We do not wait for problems to surface. We design conditions in which problems cannot exist.</p>
+    </div>
+    <div class="i2-pillars">
+      <div class="i2-pillar reveal">
+        <div class="i2-pillar-num">I</div>
+        <div class="i2-pillar-title">Intelligence</div>
+        <div class="i2-pillar-text">A continuous layer of proprietary monitoring across all critical systems — environmental, structural, mechanical, and operational. Issues are identified before they form.</div>
+      </div>
+      <div class="i2-pillar reveal reveal-delay-1">
+        <div class="i2-pillar-num">×</div>
+        <div class="i2-pillar-title">Intention</div>
+        <div class="i2-pillar-text">Every protocol, every decision, every interaction is deliberate. There is no improvisation. There is no reaction. Every action is the result of a designed system.</div>
+      </div>
+      <div class="i2-pillar reveal reveal-delay-2">
+        <div class="i2-pillar-num">I²</div>
+        <div class="i2-pillar-title">The Standard</div>
+        <div class="i2-pillar-text">When intelligence and intention operate together, the result is an estate that anticipates, prevents, and performs — without your involvement, without exception.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="operations">
+  <div class="container">
+    <div class="ops-intro">
+      <span class="label section-label reveal">Estate Operations</span>
+      <h2 class="section-title reveal reveal-delay-1">Every Function.<br><em>One Seamless System.</em></h2>
+      <div class="divider divider-left reveal reveal-delay-2"></div>
+      <p class="section-text reveal reveal-delay-2">We do not offer services. We assume operational control. Each function below is a permanent component of a fully integrated estate system.</p>
+    </div>
+    <div class="ops-grid">
+      <div class="ops-item reveal">
+        <div class="ops-num">01</div>
+        <div class="ops-title">Staff Management</div>
+        <div class="ops-desc">We recruit, vet, train, schedule, and supervise every member of your residential team — housekeepers, estate managers, groundskeepers, and support staff. Expectations are set, standards are maintained, and you remain entirely uninvolved.</div>
+        <span class="ops-tag">People · Standards · Accountability</span>
+      </div>
+      <div class="ops-item reveal reveal-delay-1">
+        <div class="ops-num">02</div>
+        <div class="ops-title">Vendor &amp; Maintenance Oversight</div>
+        <div class="ops-desc">From landscaping and pool care to HVAC specialists and security contractors — every vendor relationship is owned and managed by us. We negotiate, schedule, supervise, and quality-check every engagement on your behalf.</div>
+        <span class="ops-tag">Vendors · Quality · Continuity</span>
+      </div>
+      <div class="ops-item reveal reveal-delay-1">
+        <div class="ops-num">03</div>
+        <div class="ops-title">Estate Readiness</div>
+        <div class="ops-desc">Your residence is maintained in a constant state of immediate readiness. Climate-controlled, immaculate, stocked, and prepared for arrival — whether you land tomorrow or in six months. There is never a lag between intent and experience.</div>
+        <span class="ops-tag">Arrival · Readiness · Perfection</span>
+      </div>
+      <div class="ops-item reveal reveal-delay-2">
+        <div class="ops-num">04</div>
+        <div class="ops-title">Project &amp; Renovation Supervision</div>
+        <div class="ops-desc">When renovations, upgrades, or large-scale projects are required, we serve as your on-site principal. We manage architects, contractors, and timelines with the precision of a development office — protecting your asset and your expectations.</div>
+        <span class="ops-tag">Projects · Oversight · Delivery</span>
+      </div>
+      <div class="ops-item reveal reveal-delay-2">
+        <div class="ops-num">05</div>
+        <div class="ops-title">Predictive Monitoring</div>
+        <div class="ops-desc">Ella Intelligence™ runs continuously beneath the surface of your home. Water intrusion, humidity shifts, HVAC irregularities, energy anomalies, and security events are detected and resolved before they escalate. The estate reports to us. Not to you.</div>
+        <span class="ops-tag">I² System · Prevention · Continuity</span>
+      </div>
+      <div class="ops-item reveal reveal-delay-3">
+        <div class="ops-num">06</div>
+        <div class="ops-title">Lifestyle Concierge</div>
+        <div class="ops-desc">Travel preparation, private dining coordination, vehicle readiness, seasonal transitions, and personal requests — handled with total discretion and flawless execution. The most refined layer of estate operation is the one you feel, but never see.</div>
+        <span class="ops-tag">Discretion · Lifestyle · Experience</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="intelligence">
   <div class="container">
     <div class="intelligence-inner">
-      <span class="label section-label reveal">Proprietary Technology</span>
-      <h2 class="section-title reveal reveal-delay-1">Ella Intelligence™</h2>
+      <span class="label section-label reveal">Ella Intelligence™</span>
+      <h2 class="section-title reveal reveal-delay-1">The Estate Knows<br><em>Before You Do</em></h2>
       <div class="divider reveal reveal-delay-2"></div>
-      <p class="intelligence-subtitle reveal reveal-delay-2">A proprietary estate intelligence system designed to detect, prevent, and resolve issues before they exist.</p>
-      <p class="section-text reveal reveal-delay-3" style="margin: 0 auto; text-align:center;">
-        We implement a discreet layer of sensor-driven intelligence operating continuously to identify risks before they escalate into costly structural damage.
-      </p>
+      <p class="intelligence-subtitle reveal reveal-delay-2">A proprietary sensor layer that detects, prevents, and resolves — before issues become damage.</p>
+      <p class="section-text reveal reveal-delay-3" style="margin:0 auto;text-align:center;">Deployed discreetly across your residence, Ella Intelligence™ operates continuously — feeding live data to our operations team, so nothing is left to chance, weather, or time.</p>
     </div>
     <div class="intel-grid">
-      <div class="intel-item reveal">
-        <div class="intel-icon">💧</div>
-        <div class="intel-title">Water Leak Detection</div>
-        <div class="intel-desc">Real-time sensors throughout the property, alerting before damage occurs.</div>
-      </div>
-      <div class="intel-item reveal reveal-delay-1">
-        <div class="intel-icon">🌡</div>
-        <div class="intel-title">Humidity & Mold Risk</div>
-        <div class="intel-desc">Continuous environmental monitoring calibrated for Florida's climate.</div>
-      </div>
-      <div class="intel-item reveal reveal-delay-2">
-        <div class="intel-icon">❄️</div>
-        <div class="intel-title">HVAC Performance Tracking</div>
-        <div class="intel-desc">Predictive analytics that flag efficiency drops before failure.</div>
-      </div>
-      <div class="intel-item reveal reveal-delay-1">
-        <div class="intel-icon">⚡</div>
-        <div class="intel-title">Energy Anomaly Detection</div>
-        <div class="intel-desc">Instant alerts on irregular consumption patterns across all systems.</div>
-      </div>
-      <div class="intel-item reveal reveal-delay-2">
-        <div class="intel-icon">🏠</div>
-        <div class="intel-title">Smart Home Integration</div>
-        <div class="intel-desc">Seamless connection with existing automation and security platforms.</div>
-      </div>
-      <div class="intel-item reveal reveal-delay-3">
-        <div class="intel-icon">🛡</div>
-        <div class="intel-title">Continuous Intelligence</div>
-        <div class="intel-desc">All systems operate 24/7, year-round, with full reporting visibility.</div>
-      </div>
+      <div class="intel-item reveal"><div class="intel-icon">💧</div><div class="intel-title">Water Intrusion Detection</div><div class="intel-desc">Perimeter and interior sensors flag moisture before structural damage begins.</div></div>
+      <div class="intel-item reveal reveal-delay-1"><div class="intel-icon">🌡</div><div class="intel-title">Humidity &amp; Mold Risk</div><div class="intel-desc">Continuous environmental calibration across Florida's variable climate.</div></div>
+      <div class="intel-item reveal reveal-delay-2"><div class="intel-icon">❄️</div><div class="intel-title">HVAC Performance</div><div class="intel-desc">Efficiency tracking with predictive alerts before system failure.</div></div>
+      <div class="intel-item reveal reveal-delay-1"><div class="intel-icon">⚡</div><div class="intel-title">Energy Anomaly Detection</div><div class="intel-desc">Instant identification of irregular consumption across all systems.</div></div>
+      <div class="intel-item reveal reveal-delay-2"><div class="intel-icon">🏠</div><div class="intel-title">Smart Home Integration</div><div class="intel-desc">Seamless layering over existing automation and security infrastructure.</div></div>
+      <div class="intel-item reveal reveal-delay-3"><div class="intel-icon">🛡</div><div class="intel-title">Continuous Intelligence</div><div class="intel-desc">24/7, year-round monitoring with full reporting — always on, never noticed.</div></div>
     </div>
   </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services">
-  <div class="container">
-    <span class="label section-label reveal">Full-Spectrum Management</span>
-    <h2 class="section-title reveal reveal-delay-1">Full-Service <em>Estate Operations</em></h2>
-    <div class="services-grid">
-      <div class="service-item reveal">
-        <div class="service-num">01</div>
-        <div class="service-name">Vendor Management</div>
-        <div class="service-desc">Landscaping, pool maintenance, repairs — fully coordinated, never your concern.</div>
-      </div>
-      <div class="service-item reveal reveal-delay-1">
-        <div class="service-num">02</div>
-        <div class="service-name">Housekeeping Oversight</div>
-        <div class="service-desc">Five-star standards enforced across every surface and detail of your home.</div>
-      </div>
-      <div class="service-item reveal reveal-delay-2">
-        <div class="service-num">03</div>
-        <div class="service-name">Preventive Maintenance</div>
-        <div class="service-desc">Proactive scheduling of all maintenance cycles before issues arise.</div>
-      </div>
-      <div class="service-item reveal reveal-delay-3">
-        <div class="service-num">04</div>
-        <div class="service-name">Weekly Inspections</div>
-        <div class="service-desc">Structured property audits with detailed reporting delivered to you.</div>
-      </div>
-      <div class="service-item reveal">
-        <div class="service-num">05</div>
-        <div class="service-name">Smart Home & Sensors</div>
-        <div class="service-desc">Ella Intelligence™ monitoring across all critical property systems.</div>
-      </div>
-      <div class="service-item reveal reveal-delay-1">
-        <div class="service-num">06</div>
-        <div class="service-name">Hurricane Readiness</div>
-        <div class="service-desc">Full preparation, securing, and post-storm inspection and recovery.</div>
-      </div>
-      <div class="service-item reveal reveal-delay-2">
-        <div class="service-num">07</div>
-        <div class="service-name">Vehicle & Asset Preparation</div>
-        <div class="service-desc">Maintenance scheduling and readiness for all property vehicles and assets.</div>
-      </div>
-      <div class="service-item reveal reveal-delay-3">
-        <div class="service-num">08</div>
-        <div class="service-name">Lifestyle Concierge</div>
-        <div class="service-desc">Travel preparation, arrivals, reservations, and personalized requests.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ARRIVAL -->
 <section id="arrival">
   <div class="container">
     <div class="arrival-inner">
@@ -733,185 +409,173 @@ footer {
       <h2 class="section-title reveal reveal-delay-1">Always Ready.<br><em>Always Perfect.</em></h2>
       <div class="divider reveal reveal-delay-2"></div>
       <p class="arrival-tagline reveal reveal-delay-2">"A home that anticipates your presence before you arrive."</p>
-      <p class="section-text reveal reveal-delay-3" style="margin: 0 auto; text-align: center;">
-        Every residence is maintained in a constant state of readiness — climate-controlled, immaculate, stocked, and prepared for immediate arrival at any time.
-      </p>
+      <p class="section-text reveal reveal-delay-3" style="margin:0 auto;text-align:center;">Climate set. Linens pressed. Pantry stocked. Staff briefed. Every residence under our operation is held in a permanent state of immediate readiness. You arrive to perfection — not preparation.</p>
+      <em class="micro-phrase reveal reveal-delay-4" style="display:block;text-align:center;">Exclusivity by design.</em>
     </div>
   </div>
 </section>
 
-<!-- EXCLUSIVITY -->
 <section id="exclusivity">
   <div class="container" style="text-align:center;">
     <span class="reveal excl-number">12</span>
-    <p class="excl-caption reveal">Private Estates. Maximum Attention.</p>
-    <span class="label section-label reveal" style="display:inline-block; margin-bottom:24px;">Exclusivity By Design</span>
-    <h2 class="section-title reveal reveal-delay-1" style="max-width:640px; margin: 0 auto 24px;">Limited Estates.<br><em>Maximum Attention.</em></h2>
+    <p class="excl-caption reveal">Private Estates. Across Florida.</p>
+    <span class="label section-label reveal" style="display:inline-block;margin-bottom:20px;">A Deliberate Constraint</span>
+    <h2 class="section-title reveal reveal-delay-1" style="max-width:640px;margin:0 auto 20px;">We Accept<br><em>Very Few.</em></h2>
     <div class="divider reveal reveal-delay-2"></div>
-    <p class="section-text reveal reveal-delay-2" style="margin: 0 auto; text-align:center;">
-      We intentionally limit our portfolio to only 12 private estates across Florida to ensure unmatched attention, discretion, and execution.
-    </p>
+    <p class="section-text reveal reveal-delay-2" style="margin:0 auto;text-align:center;">We limit our portfolio to twelve private estates. Not as a marketing posture — but as an operational commitment. Depth of service is incompatible with scale. We chose depth.</p>
+    <div class="excl-details">
+      <div class="excl-detail reveal">
+        <div class="excl-detail-title">Selective Intake</div>
+        Each estate is evaluated before engagement. We accept clients whose properties and expectations align with our standards — not the other way around.
+      </div>
+      <div class="excl-detail reveal reveal-delay-1">
+        <div class="excl-detail-title">Depth Over Scale</div>
+        Every estate receives our full attention. There are no junior accounts. There is no tiered care. Every client receives the same obsessive standard.
+      </div>
+      <div class="excl-detail reveal reveal-delay-2">
+        <div class="excl-detail-title">Access by Introduction</div>
+        We do not advertise. New clients are accepted by referral or private introduction only. If you are reading this, someone trusted you with our name.
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- PRICING -->
-<section id="pricing">
+<section id="engagement">
   <div class="container">
-    <span class="label section-label reveal" style="display:block; text-align:center;">Investment</span>
-    <h2 class="section-title reveal reveal-delay-1" style="text-align:center;">Estate Operations <em>Tiers</em></h2>
+    <span class="label section-label reveal" style="display:block;text-align:center;">Private Engagement</span>
+    <h2 class="section-title reveal reveal-delay-1" style="text-align:center;">Private Engagement <em>Levels</em></h2>
+    <div class="divider reveal reveal-delay-2"></div>
+    <p class="section-text reveal reveal-delay-2" style="margin:0 auto;text-align:center;max-width:520px;">Each engagement is structured around your residence, your rhythm, and your expectations. The levels below serve as a foundation — every arrangement is refined through private consultation.</p>
     <div class="pricing-grid">
-      <!-- EXECUTIVE -->
       <div class="pricing-card reveal">
-        <div class="pricing-tier">Tier I</div>
-        <div class="pricing-name">Estate Executive</div>
+        <div class="pricing-tier">Level I</div>
+        <div class="pricing-name">Estate Core</div>
+        <div class="pricing-starting">Starting at</div>
         <div class="pricing-price">$15,000</div>
         <div class="pricing-period">per month</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
           <li>Full operational management</li>
-          <li>Vendor coordination</li>
-          <li>Weekly inspections</li>
-          <li>Basic concierge services</li>
+          <li>Vendor coordination &amp; oversight</li>
+          <li>Weekly property inspections</li>
           <li>Preventive maintenance scheduling</li>
+          <li>Basic concierge support</li>
         </ul>
-        <a href="https://wa.me/14072023758" class="btn-secondary" style="display:block; text-align:center;">Inquire</a>
+        <a href="https://wa.me/14072023758" class="btn-secondary" style="display:block;text-align:center;">Inquire Confidentially</a>
       </div>
-      <!-- ELITE -->
       <div class="pricing-card featured reveal reveal-delay-1">
-        <div class="pricing-tier">Tier II</div>
-        <div class="pricing-name">Estate Elite</div>
+        <div class="pricing-tier">Level II</div>
+        <div class="pricing-name">Estate Signature</div>
+        <div class="pricing-starting">Starting at</div>
         <div class="pricing-price">$20,000</div>
         <div class="pricing-period">per month</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li>Everything in Executive</li>
+          <li>Everything in Estate Core</li>
           <li>Ella Intelligence™ monitoring</li>
-          <li>Smart home integration</li>
+          <li>Smart home system integration</li>
           <li>Priority response protocols</li>
-          <li>Hurricane readiness</li>
+          <li>Hurricane readiness &amp; response</li>
+          <li>Lifestyle concierge services</li>
         </ul>
-        <a href="https://wa.me/14072023758" class="btn-primary" style="display:block; text-align:center;">Inquire</a>
+        <a href="https://wa.me/14072023758" class="btn-primary" style="display:block;text-align:center;">Inquire Confidentially</a>
       </div>
-      <!-- SOVEREIGN -->
       <div class="pricing-card reveal reveal-delay-2">
-        <div class="pricing-tier">Tier III</div>
-        <div class="pricing-name">Estate Sovereign</div>
+        <div class="pricing-tier">Level III</div>
+        <div class="pricing-name">Estate Full Operations</div>
+        <div class="pricing-starting">Starting at</div>
         <div class="pricing-price">$45,000</div>
         <div class="pricing-period">per month</div>
         <div class="pricing-divider"></div>
         <ul class="pricing-features">
-          <li>Full estate operation</li>
-          <li>Advanced intelligence system</li>
-          <li>Full lifestyle concierge</li>
-          <li>Vehicle & asset management</li>
-          <li>White-glove service</li>
-          <li>Dedicated estate manager</li>
+          <li>Complete estate operation</li>
+          <li>Advanced I² intelligence system</li>
+          <li>Full lifestyle &amp; travel concierge</li>
+          <li>Vehicle &amp; asset management</li>
+          <li>Project &amp; renovation supervision</li>
+          <li>Dedicated estate director</li>
+          <li>White-glove, 24/7 availability</li>
         </ul>
-        <a href="https://wa.me/14072023758" class="btn-secondary" style="display:block; text-align:center;">Inquire</a>
+        <a href="https://wa.me/14072023758" class="btn-secondary" style="display:block;text-align:center;">Inquire Confidentially</a>
       </div>
     </div>
+    <p class="engagement-note reveal">Every engagement is customized. These levels are a starting point — not a limit.</p>
   </div>
 </section>
 
-<!-- TRUST -->
 <section id="trust">
   <div class="container">
-    <span class="label section-label reveal" style="display:block; text-align:center;">Standards of Excellence</span>
-    <h2 class="section-title reveal reveal-delay-1" style="text-align:center; max-width:600px; margin: 0 auto;">Excellence <em>Beyond Standards</em></h2>
+    <span class="label section-label reveal" style="display:block;text-align:center;">Our Standard</span>
+    <h2 class="section-title reveal reveal-delay-1" style="text-align:center;max-width:580px;margin:0 auto;">Built on the World's<br><em>Most Demanding Standards</em></h2>
     <div class="divider reveal reveal-delay-2"></div>
-    <p class="section-text reveal reveal-delay-2" style="margin: 0 auto 0; text-align:center;">
-      Built with the same operational standards used in private aviation, high-end hospitality, and superyacht management — where precision, reliability, and discretion are non-negotiable.
-    </p>
+    <p class="section-text reveal reveal-delay-2" style="margin:0 auto;text-align:center;">Our operational protocols are drawn from private aviation, superyacht management, and ultra-luxury hospitality — industries where precision is not optional and discretion is absolute.</p>
     <div class="trust-pillars">
       <div class="trust-pillar reveal">
         <div class="trust-pillar-icon">✈️</div>
         <div class="trust-pillar-title">Aviation-Grade Precision</div>
-        <div class="trust-pillar-text">Every protocol engineered to the same standards as private aviation operations, where failure is simply not an option.</div>
+        <div class="trust-pillar-text">Every protocol is engineered for reliability. Checklists. Redundancies. Zero tolerance for inconsistency. The same standard that governs private flight governs your home.</div>
       </div>
       <div class="trust-pillar reveal reveal-delay-1">
         <div class="trust-pillar-icon">🛥</div>
         <div class="trust-pillar-title">Superyacht Discretion</div>
-        <div class="trust-pillar-text">Absolute confidentiality and white-glove service modeled on the world's most exclusive maritime operations.</div>
+        <div class="trust-pillar-text">Absolute confidentiality. No information leaves the estate. No staff discusses the property. Discretion is not a policy — it is the operating environment.</div>
       </div>
       <div class="trust-pillar reveal reveal-delay-2">
         <div class="trust-pillar-icon">🏨</div>
-        <div class="trust-pillar-title">Hospitality Excellence</div>
-        <div class="trust-pillar-text">Five-star hotel management philosophy applied to your private residence, at every moment.</div>
+        <div class="trust-pillar-title">Five-Star Hospitality</div>
+        <div class="trust-pillar-text">The consistency and standard of the world's finest private hotels — applied permanently to your residence. Not for guests. For you, every time you arrive.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
 <section id="cta">
   <div class="container">
     <div class="cta-inner">
-      <span class="label section-label reveal" style="display:block;">Effortless Ownership</span>
-      <h2 class="cta-title reveal reveal-delay-1">Experience Effortless<br><em>Ownership</em></h2>
+      <span class="label section-label reveal" style="display:block;">Request Private Access</span>
+      <h2 class="cta-title reveal reveal-delay-1">Not Every Home<br><em>Is Accepted</em></h2>
       <div class="divider reveal reveal-delay-2"></div>
-      <p class="cta-body reveal reveal-delay-2">
-        Your home was never meant to be managed.<br>
-        It was meant to be lived in — effortlessly.
-      </p>
-      <div class="reveal reveal-delay-3">
-        <a href="https://wa.me/14072023758" class="btn-primary">Request Private Introduction</a>
+      <p class="cta-body reveal reveal-delay-2">We work with a very small number of owners who expect the highest operational standard — and have no interest in anything less. If that describes you, we would welcome a private conversation.</p>
+      <p class="cta-note reveal reveal-delay-3">All inquiries are handled in strict confidence. No obligation. No sales process.</p>
+      <div class="cta-buttons reveal reveal-delay-4">
+        <a href="https://wa.me/14072023758" class="btn-primary">Request Private Access</a>
+        <a href="https://wa.me/14072023758" class="btn-secondary">Inquire Confidentially</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div>
-      <div class="footer-logo-name">Ella & Co.</div>
+      <div class="footer-logo-name">Ella &amp; Co.</div>
       <div class="footer-logo-sub">Private Estate Operations</div>
     </div>
-    <div class="footer-center">
-      <div class="footer-referral">By referral or private introduction only</div>
-    </div>
-    <div class="footer-contact">
+    <div><div class="footer-referral">By referral or private introduction only</div></div>
+    <div style="text-align:right;">
       <div class="footer-location">Florida, United States</div>
       <a href="tel:+14072023758" class="footer-phone">+1 (407) 202-3758</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span class="footer-copy">© 2025 Ella & Co. — Private Estate Operations. All rights reserved.</span>
-    <span class="footer-copy" style="color: var(--gold); opacity: 0.5;">◆</span>
+    <span class="footer-copy">© 2025 Ella &amp; Co. — Private Estate Operations. All rights reserved.</span>
+    <span class="footer-copy" style="color:var(--gold);opacity:.4;">◆</span>
     <span class="footer-copy">Florida · Confidential</span>
   </div>
 </footer>
 
-<!-- WHATSAPP -->
-<a href="https://wa.me/14072023758" class="whatsapp-btn" target="_blank" title="WhatsApp +1 (407) 202-3758">
+<a href="https://wa.me/14072023758" class="whatsapp-btn" target="_blank" title="+1 (407) 202-3758">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
   </svg>
 </a>
 
 <script>
-// Header scroll effect
-const header = document.getElementById('header');
-window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 60);
-});
-
-// Scroll reveal
-const revealEls = document.querySelectorAll('.reveal');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      observer.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-revealEls.forEach(el => observer.observe(el));
-
-// Hero immediate reveal
-setTimeout(() => {
-  document.querySelectorAll('#hero .reveal').forEach(el => el.classList.add('visible'));
-}, 100);
+const header=document.getElementById('header');
+window.addEventListener('scroll',()=>header.classList.toggle('scrolled',window.scrollY>60));
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+setTimeout(()=>document.querySelectorAll('#hero .reveal').forEach(el=>el.classList.add('visible')),100);
 </script>
 </body>
 </html>
